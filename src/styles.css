@@ -1,0 +1,274 @@
+/* Palette tokens are the validated reference instance from the dataviz method:
+   the categorical slots pass the lightness band, chroma floor, CVD separation and
+   normal-vision floor in both modes. Light mode raises a contrast warning on
+   slots 3, 4 and 5 — the relief is the always-present legend plus the full table
+   view, both of which ship. */
+
+:root {
+  color-scheme: light;
+
+  --page: #f9f9f7;
+  --surface-1: #fcfcfb;
+  --text-primary: #0b0b0b;
+  --text-secondary: #52514e;
+  --text-muted: #898781;
+  --grid: #e1e0d9;
+  --axis: #c3c2b7;
+  --hairline: rgba(11, 11, 11, 0.10);
+  --up: #006300;
+  --down: #d03b3b;
+
+  --series-1: #2a78d6;
+  --series-2: #eb6834;
+  --series-3: #1baf7a;
+  --series-4: #eda100;
+  --series-5: #e87ba4;
+
+  --body: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --shell: 1180px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:where(:not([data-theme="light"])) {
+    color-scheme: dark;
+
+    --page: #0d0d0d;
+    --surface-1: #1a1a19;
+    --text-primary: #ffffff;
+    --text-secondary: #c3c2b7;
+    --text-muted: #898781;
+    --grid: #2c2c2a;
+    --axis: #383835;
+    --hairline: rgba(255, 255, 255, 0.10);
+    --up: #0ca30c;
+    --down: #e66767;
+
+    --series-1: #3987e5;
+    --series-2: #d95926;
+    --series-3: #199e70;
+    --series-4: #c98500;
+    --series-5: #d55181;
+  }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --page: #0d0d0d;
+  --surface-1: #1a1a19;
+  --text-primary: #ffffff;
+  --text-secondary: #c3c2b7;
+  --text-muted: #898781;
+  --grid: #2c2c2a;
+  --axis: #383835;
+  --hairline: rgba(255, 255, 255, 0.10);
+  --up: #0ca30c;
+  --down: #e66767;
+
+  --series-1: #3987e5;
+  --series-2: #d95926;
+  --series-3: #199e70;
+  --series-4: #c98500;
+  --series-5: #d55181;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--page);
+  color: var(--text-primary);
+  font: 400 15px/1.6 var(--body);
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: inherit; }
+h1, h2 { margin: 0; letter-spacing: -0.015em; }
+
+.shell { width: 100%; max-width: var(--shell); margin: 0 auto; padding: 0 22px; }
+
+.sr-only {
+  position: absolute; width: 1px; height: 1px; overflow: hidden;
+  clip: rect(0 0 0 0); white-space: nowrap;
+}
+
+.skip {
+  position: absolute; left: -9999px; top: 0; z-index: 50;
+  padding: 10px 18px; background: var(--series-1); color: #fff;
+}
+.skip:focus { left: 0; }
+
+/* -------------------------------------------------------------- chrome */
+
+.app-header { border-bottom: 1px solid var(--hairline); background: var(--surface-1); }
+.header-inner { display: flex; align-items: center; gap: 26px; height: 58px; }
+
+.wordmark { font-weight: 700; font-size: 17px; text-decoration: none; margin-right: auto; letter-spacing: -0.02em; }
+.wordmark span { color: var(--text-muted); font-weight: 400; }
+
+.app-header nav { display: flex; gap: 4px; }
+.app-header nav a { padding: 7px 13px; border-radius: 6px; font-size: 14px; text-decoration: none; color: var(--text-secondary); }
+.app-header nav a:hover { background: var(--page); color: var(--text-primary); }
+.app-header nav a[aria-current="page"] { background: var(--series-1); color: #fff; font-weight: 500; }
+
+main { padding: 30px 0 70px; }
+
+.app-footer { border-top: 1px solid var(--hairline); padding: 24px 0 40px; color: var(--text-muted); }
+.app-footer p { margin: 0 0 6px; font-size: 13.5px; }
+.app-footer .fine { font-size: 12.5px; }
+.app-footer a { color: var(--text-secondary); }
+
+.page-head { margin-bottom: 24px; }
+.page-head h1 { font-size: clamp(24px, 3.2vw, 33px); }
+.page-note { margin: 9px 0 0; color: var(--text-secondary); font-size: 15px; max-width: 74ch; }
+
+/* ------------------------------------------------------------ controls */
+
+.controls {
+  display: flex; flex-wrap: wrap; gap: 26px; align-items: flex-end;
+  padding: 16px 18px; margin-bottom: 22px;
+  background: var(--surface-1); border: 1px solid var(--hairline); border-radius: 10px;
+}
+
+.control { display: flex; flex-direction: column; gap: 7px; }
+.control-label { font-size: 11.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); }
+
+.segmented { display: flex; border: 1px solid var(--axis); border-radius: 7px; overflow: hidden; }
+.segmented button { font: inherit; font-size: 13.5px; padding: 7px 15px; background: var(--surface-1); color: var(--text-secondary); border: 0; border-right: 1px solid var(--axis); cursor: pointer; }
+.segmented button:last-child { border-right: 0; }
+.segmented button[aria-pressed="true"] { background: var(--text-primary); color: var(--surface-1); }
+
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+
+.chip {
+  display: inline-flex; align-items: center; gap: 7px;
+  font: inherit; font-size: 13.5px; padding: 6px 13px;
+  border: 1px solid var(--axis); border-radius: 100px;
+  background: var(--surface-1); color: var(--text-secondary); cursor: pointer;
+}
+
+.chip:hover { border-color: var(--text-secondary); color: var(--text-primary); }
+.chip.is-on { border-color: var(--text-primary); color: var(--text-primary); font-weight: 500; }
+.chip:not(.is-on) .key { opacity: 0.3; }
+
+.key { width: 10px; height: 10px; border-radius: 3px; display: inline-block; flex: 0 0 auto; }
+
+/* -------------------------------------------------------------- panels */
+
+.panel {
+  background: var(--surface-1);
+  border: 1px solid var(--hairline);
+  border-radius: 12px;
+  padding: 20px 20px 16px;
+  margin-bottom: 22px;
+}
+
+.panel-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 16px; margin-bottom: 14px; }
+.panel-head h2 { font-size: 17px; }
+.panel-note { margin: 7px 0 0; font-size: 13.5px; color: var(--text-secondary); max-width: 68ch; }
+.panel-foot { margin: 10px 0 0; font-size: 13px; color: var(--text-muted); }
+.panel-foot a { color: var(--series-1); }
+
+.two-up { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; align-items: start; }
+
+/* Grid children default to min-width:auto, which lets a measured chart widen its
+   own track and push the page sideways. */
+.two-up > *, .panel, .chart { min-width: 0; }
+
+.legend { list-style: none; display: flex; flex-wrap: wrap; gap: 6px 16px; margin: 0; padding: 0; }
+.legend li { display: flex; align-items: center; gap: 7px; font-size: 13px; color: var(--text-secondary); }
+
+.field-inline select {
+  font: inherit; font-size: 13.5px; padding: 7px 11px;
+  border: 1px solid var(--axis); border-radius: 7px;
+  background: var(--surface-1); color: var(--text-primary);
+}
+
+/* -------------------------------------------------------------- tiles */
+
+.tiles { display: flex; flex-wrap: wrap; gap: 24px; margin: 4px 0 14px; }
+.tile-label { margin: 0; font-size: 12px; color: var(--text-muted); }
+.tile-value { margin: 3px 0 0; font-size: 24px; font-weight: 600; letter-spacing: -0.02em; }
+
+/* -------------------------------------------------------------- charts */
+
+.chart { position: relative; width: 100%; }
+.chart svg { display: block; overflow: visible; touch-action: pan-y; }
+
+.grid { stroke: var(--grid); stroke-width: 1; }
+.baseline-rule { stroke: var(--axis); stroke-width: 1.5; }
+.baseline-label { fill: var(--text-muted); font-size: 10.5px; letter-spacing: 0.06em; }
+.crosshair { stroke: var(--axis); stroke-width: 1; }
+
+.tick { fill: var(--text-muted); font-size: 11px; }
+.end-label { fill: var(--text-secondary); font-size: 12px; font-weight: 500; }
+.bar-name { fill: var(--text-primary); font-size: 13px; font-weight: 500; }
+.bar-value { fill: var(--text-secondary); font-size: 12.5px; font-variant-numeric: tabular-nums; }
+
+.tooltip {
+  position: absolute; top: 12px; z-index: 5; pointer-events: none;
+  min-width: 162px; padding: 10px 12px;
+  background: var(--surface-1); border: 1px solid var(--axis);
+  border-radius: 8px; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+}
+
+.tooltip-date { margin: 0 0 7px; font-size: 12px; color: var(--text-muted); }
+.tooltip dl { margin: 0; display: grid; gap: 4px; }
+.tooltip dl div { display: flex; justify-content: space-between; gap: 16px; font-size: 13px; }
+.tooltip dt { display: flex; align-items: center; gap: 7px; color: var(--text-secondary); }
+.tooltip dd { margin: 0; font-variant-numeric: tabular-nums; }
+
+/* --------------------------------------------------------------- table */
+
+.table-wrap { overflow-x: auto; border: 1px solid var(--hairline); border-radius: 10px; background: var(--surface-1); }
+
+.data-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.data-table th { position: sticky; top: 0; background: var(--surface-1); border-bottom: 1px solid var(--axis); padding: 0; }
+
+.data-table th button {
+  width: 100%; font: inherit; font-size: 12px; letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--text-muted); font-weight: 500;
+  background: none; border: 0; cursor: pointer; padding: 11px 14px;
+  display: flex; align-items: center; gap: 5px;
+}
+
+.data-table th.num button { justify-content: flex-end; }
+.data-table th button:hover { color: var(--text-primary); }
+.arrow { opacity: 0; }
+.arrow.is-on { opacity: 1; }
+
+.data-table td { padding: 9px 14px; border-bottom: 1px solid var(--grid); }
+.data-table .num { text-align: right; font-variant-numeric: tabular-nums; }
+.data-table tbody tr:hover { background: var(--page); }
+
+/* -------------------------------------------------------------- prose */
+
+.prose { max-width: 68ch; }
+.prose h2 { font-size: 17px; margin: 28px 0 8px; }
+.prose p { margin: 0 0 12px; color: var(--text-secondary); }
+.prose a { color: var(--series-1); }
+.prose-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 26px; }
+
+.btn {
+  display: inline-block; font: inherit; font-size: 14px; font-weight: 500;
+  padding: 9px 17px; border: 1px solid transparent; border-radius: 7px;
+  cursor: pointer; text-decoration: none;
+}
+
+.btn-solid { background: var(--series-1); color: #fff; }
+.btn-ghost { border-color: var(--axis); color: var(--text-primary); }
+
+/* --------------------------------------------------------- responsive */
+
+@media (max-width: 960px) {
+  .two-up { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 620px) {
+  .controls { gap: 18px; }
+  .tiles { gap: 18px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition-duration: 0.01ms !important; }
+}
